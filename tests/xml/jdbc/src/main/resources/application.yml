@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: jdbc
+management:
+  context_path: /admin
+security:
+  user:
+    password: password
+logging:
+  level:
+#    org.springframework.security: WARN
+#    org.springframework.web: DEBUG
+#    org.springframework.jdbc: DEBUG
+
+---
+
+spring:
+  profiles: client
+server:
+  port: 8081

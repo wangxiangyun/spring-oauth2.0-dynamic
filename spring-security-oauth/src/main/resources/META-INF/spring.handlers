@@ -1,0 +1,1 @@
+http\://www.springframework.org/schema/security/oauth=org.springframework.security.oauth.config.OAuthSecurityNamespaceHandler

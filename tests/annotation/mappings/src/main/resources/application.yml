@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: mappings
+management:
+  context_path: /admin
+security:
+  user:
+    password: password
+logging:
+  level:
+    # org.springframework.security: DEBUG
+oauth:
+  paths:
+    token: /token
+    authorize: /authorize
+    confirm: /approve    
+    check_token: /decode
+    token_key: /key
