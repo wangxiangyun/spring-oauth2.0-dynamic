@@ -113,6 +113,12 @@ public class OAuth2AuthenticationManager implements AuthenticationManager, Initi
 	}
 
 	private void checkPermission(Authentication authentication, Authentication auth2) {
+		if(auth2 instanceof OAuth2Authentication ){
+			OAuth2Authentication auth2Authentication= (OAuth2Authentication) auth2;
+			if(auth2Authentication.getUserAuthentication()==null ){
+				return;
+			}
+		}
 		Object object = authentication.getCredentials();
 		if(object instanceof HttpServletRequest){
 			HttpServletRequest request= (HttpServletRequest) object;

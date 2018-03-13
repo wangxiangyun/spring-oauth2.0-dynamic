@@ -467,12 +467,12 @@
       <url>scp://static.springframework.org/var/www/domains/springframework.org/static/htdocs/spring-security/oauth</url>
     </site>
 
-    <repository>
+ <!--   <repository>
       <id>repo.spring.io</id>
       <name>Spring Release Repository</name>
       <url>http://repo.spring.io/libs-release-local</url>
     </repository>
-
+-->
     <snapshotRepository>
       <id>repo.spring.io</id>
       <name>Spring Snapshot Repository</name>
