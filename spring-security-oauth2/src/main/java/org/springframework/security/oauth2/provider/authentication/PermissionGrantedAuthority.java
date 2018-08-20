@@ -3,7 +3,7 @@ package org.springframework.security.oauth2.provider.authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 /**
- * Created by yangyibo on 17/2/15.
+ * Created by wxy on 17/2/15.
  */
 public class PermissionGrantedAuthority implements GrantedAuthority {
 
