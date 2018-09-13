@@ -1,4 +1,4 @@
-package org.springframework.security.oauth2.provider.permission;
+package org.springframework.security.oauth2.provider.access;
 
 /**
  * Created by wangxiangyun on 2018/9/13.

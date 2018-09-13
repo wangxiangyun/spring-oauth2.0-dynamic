@@ -1,4 +1,4 @@
-package org.springframework.security.oauth2.provider.permission;
+package org.springframework.security.oauth2.provider.access;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;

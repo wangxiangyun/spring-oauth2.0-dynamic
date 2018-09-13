@@ -1,10 +1,9 @@
-package org.springframework.security.oauth2.provider.permission;
+package org.springframework.security.oauth2.provider.access;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.oauth2.client.resource.OAuth2AccessDeniedException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
