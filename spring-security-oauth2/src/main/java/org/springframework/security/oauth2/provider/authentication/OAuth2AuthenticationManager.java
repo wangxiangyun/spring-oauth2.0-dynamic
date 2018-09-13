@@ -29,7 +29,9 @@ import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
+import org.springframework.util.PathMatcher;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -124,12 +126,23 @@ public class OAuth2AuthenticationManager implements AuthenticationManager, Initi
 			HttpServletRequest request= (HttpServletRequest) object;
 			final 	String URI = request.getRequestURI();
 			final	String METHOD =  request.getMethod();
+			final	String ALL_METHOD ="ALL";
 			boolean flag=false;
 			List<PermissionGrantedAuthority> grantedAuthorityList= (List<PermissionGrantedAuthority>) auth2.getAuthorities();
-			for (PermissionGrantedAuthority permissionGrantedAuthority : grantedAuthorityList ) {
-				if(permissionGrantedAuthority.getPermissionUrl().equals(URI)&&METHOD.equals(permissionGrantedAuthority.getMethod())){
-					flag=true;
-					break;
+			if(!grantedAuthorityList.isEmpty()){
+				PathMatcher matcher = new AntPathMatcher();
+				for (PermissionGrantedAuthority permissionGrantedAuthority : grantedAuthorityList ) {
+					String patternURL = permissionGrantedAuthority.getPermissionUrl();
+					String grandMethod = permissionGrantedAuthority.getMethod();
+					boolean matchFlag = matcher.match(patternURL,URI);
+					if(matchFlag==true&&grandMethod.equals(ALL_METHOD)){
+						flag=true;
+						break;
+					}
+					if(matchFlag==true&&grandMethod.equals(METHOD)){
+						flag=true;
+						break;
+					}
 				}
 			}
 			if (!flag){
