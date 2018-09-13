@@ -246,5 +246,8 @@ public final class ResourceServerSecurityConfigurer extends
 	public AccessDeniedHandler getAccessDeniedHandler() {
 		return this.accessDeniedHandler;
 	}
-
+	
+	public AuthenticationManager getAuthenticationManager() {
+		return authenticationManager;
+	}
 }

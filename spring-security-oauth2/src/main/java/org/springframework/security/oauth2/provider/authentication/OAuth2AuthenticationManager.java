@@ -12,29 +12,19 @@
  */
 package org.springframework.security.oauth2.provider.authentication;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.resource.OAuth2AccessDeniedException;
 import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
-import org.springframework.security.oauth2.provider.AuthorizationRequest;
-import org.springframework.security.oauth2.provider.ClientDetails;
-import org.springframework.security.oauth2.provider.ClientDetailsService;
-import org.springframework.security.oauth2.provider.ClientRegistrationException;
-import org.springframework.security.oauth2.provider.OAuth2Authentication;
+import org.springframework.security.oauth2.provider.*;
+import org.springframework.security.oauth2.provider.permission.AccessPermissionManager;
+import org.springframework.security.oauth2.provider.permission.JdbcAccessPermissionManager;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
-import org.springframework.util.AntPathMatcher;
 import org.springframework.util.Assert;
-import org.springframework.util.PathMatcher;
-import org.springframework.util.StringUtils;
-
-import javax.servlet.http.HttpServletRequest;
+import java.util.Collection;
+import java.util.Set;
 
 /**
  * An {@link AuthenticationManager} for OAuth2 protected resources.
@@ -46,7 +36,8 @@ public class OAuth2AuthenticationManager implements AuthenticationManager, Initi
 
 	private ResourceServerTokenServices tokenServices;
 
-	private ClientDetailsService clientDetailsService;
+	private ClientDetailsService    clientDetailsService;
+	private AccessPermissionManager accessPermissionManager ;
 
 	private String resourceId;
 
@@ -57,7 +48,11 @@ public class OAuth2AuthenticationManager implements AuthenticationManager, Initi
 	public void setClientDetailsService(ClientDetailsService clientDetailsService) {
 		this.clientDetailsService = clientDetailsService;
 	}
-
+	
+	public void setAccessPermissionManager(AccessPermissionManager accessPermissionManager) {
+		this.accessPermissionManager = accessPermissionManager;
+	}
+	
 	/**
 	 * @param tokenServices the tokenServices to set
 	 */
@@ -98,8 +93,13 @@ public class OAuth2AuthenticationManager implements AuthenticationManager, Initi
 		}
 
 		checkClientDetails(auth);
-		checkPermission(authentication,auth);
-
+		if(accessPermissionManager!=null){
+			boolean flag = accessPermissionManager.checkPermission(authentication,auth);
+			if (!flag){
+				throw new OAuth2AccessDeniedException("token no right!! please check!");
+			}
+		}
+		
 		if (authentication.getDetails() instanceof OAuth2AuthenticationDetails) {
 			OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) authentication.getDetails();
 			// Guard against a cached copy of the same details
@@ -114,42 +114,6 @@ public class OAuth2AuthenticationManager implements AuthenticationManager, Initi
 
 	}
 
-	private void checkPermission(Authentication authentication, Authentication auth2) {
-		if(auth2 instanceof OAuth2Authentication ){
-			OAuth2Authentication auth2Authentication= (OAuth2Authentication) auth2;
-			if(auth2Authentication.getUserAuthentication()==null ){
-				return;
-			}
-		}
-		Object object = authentication.getCredentials();
-		if(object instanceof HttpServletRequest){
-			HttpServletRequest request= (HttpServletRequest) object;
-			final 	String URI = request.getRequestURI();
-			final	String METHOD =  request.getMethod();
-			final	String ALL_METHOD ="ALL";
-			boolean flag=false;
-			List<PermissionGrantedAuthority> grantedAuthorityList= (List<PermissionGrantedAuthority>) auth2.getAuthorities();
-			if(!grantedAuthorityList.isEmpty()){
-				PathMatcher matcher = new AntPathMatcher();
-				for (PermissionGrantedAuthority permissionGrantedAuthority : grantedAuthorityList ) {
-					String patternURL = permissionGrantedAuthority.getPermissionUrl();
-					String grandMethod = permissionGrantedAuthority.getMethod();
-					boolean matchFlag = matcher.match(patternURL,URI);
-					if(matchFlag==true&&grandMethod.equals(ALL_METHOD)){
-						flag=true;
-						break;
-					}
-					if(matchFlag==true&&grandMethod.equals(METHOD)){
-						flag=true;
-						break;
-					}
-				}
-			}
-			if (!flag){
-				throw new OAuth2AccessDeniedException("token no right!! please check!");
-			}
-		}
-	}
 
 	private void checkClientDetails(OAuth2Authentication auth) {
 		if (clientDetailsService != null) {
