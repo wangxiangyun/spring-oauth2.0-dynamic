@@ -15,14 +15,14 @@ public interface AccessPermissionManager {
      * @param user
      * @return
      */
-  List<Role> getUserRole(User user);
+  List<Role> getUserRole(UserCore user);
     
     /**
      * 获取当前用户的所有角色的权限集合
      * @param user
      * @return
      */
-  List<Permission> getUserAllPermisson(User user);
+  List<Permission> getUserAllPermisson(UserCore user);
     
     /**
      * 判断是否有权限

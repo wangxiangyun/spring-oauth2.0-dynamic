@@ -28,7 +28,7 @@ public class JdbcAccessPermissionManager implements AccessPermissionManager {
     }
     
     @Override
-    public List<Role> getUserRole(User user) {
+    public List<Role> getUserRole(UserCore user) {
         String sql = "SELECT * FROM role WHERE id IN (SELECT role_id FROM user_role WHERE user_id =?) ";
         List<Role> roleList = jdbcTemplate.query(sql, new RowMapper<Role>() {
             @Override
@@ -40,12 +40,12 @@ public class JdbcAccessPermissionManager implements AccessPermissionManager {
                 role.setName(name);
                 return role;
             }
-        }, user.getUsername());
+        }, user.getUserId());
         return roleList;
     }
     
     @Override
-    public List<Permission> getUserAllPermisson(User user) {
+    public List<Permission> getUserAllPermisson(UserCore user) {
         String sql = "SELECT * FROM permission WHERE id IN "
                 + "(SELECT id FROM role_permisson WHERE  role_id IN "
                 + "( SELECT id FROM role WHERE id IN (SELECT role_id FROM user_role WHERE user_id =?)))";
@@ -65,7 +65,7 @@ public class JdbcAccessPermissionManager implements AccessPermissionManager {
                 permission.setMethod(method);
                 return permission;
             }
-        }, user.getUsername());
+        },  user.getUserId());
         return permissionList;
     }
     
@@ -84,7 +84,7 @@ public class JdbcAccessPermissionManager implements AccessPermissionManager {
             final String URI = request.getRequestURI();
             final String METHOD = request.getMethod();
             final String ALL_METHOD = "ALL";
-            List<Permission> permissionList = this.getUserAllPermisson((User) auth2.getPrincipal());
+            List<Permission> permissionList = this.getUserAllPermisson((UserCore) auth2.getPrincipal());
             
             if (!permissionList.isEmpty()) {
                 PathMatcher matcher = new AntPathMatcher();
