@@ -32,6 +32,7 @@ public class OAuth2Exception extends RuntimeException {
 	public static final String REDIRECT_URI_MISMATCH ="redirect_uri_mismatch";
 	public static final String UNSUPPORTED_RESPONSE_TYPE ="unsupported_response_type";
 	public static final String ACCESS_DENIED = "access_denied";
+	public static final String USERNAME_NOT_FOUND = "username_not_found";
 
 	private Map<String, String> additionalInformation = null;
 
@@ -129,7 +130,44 @@ public class OAuth2Exception extends RuntimeException {
 			return new OAuth2Exception(errorMessage);
 		}
 	}
-
+	public static OAuth2Exception create(String errorCode) {
+		if (INVALID_CLIENT.equals(errorCode)) {
+			return new InvalidClientException("无效的client");
+		}
+		else if (UNAUTHORIZED_CLIENT.equals(errorCode)) {
+			return new UnauthorizedClientException("没有授权的client");
+		}
+		else if (INVALID_GRANT.equals(errorCode)) {
+			return new InvalidGrantException("用户名或密码错误");
+		}
+		else if (INVALID_SCOPE.equals(errorCode)) {
+			return new InvalidScopeException("无效的scope");
+		}
+		else if (INVALID_TOKEN.equals(errorCode)) {
+			return new InvalidTokenException("token无效");
+		}
+		else if (INVALID_REQUEST.equals(errorCode)) {
+			return new InvalidRequestException("无效的请求");
+		}
+		else if (REDIRECT_URI_MISMATCH.equals(errorCode)) {
+			return new RedirectMismatchException("注册的跳转地址错误");
+		}
+		else if (UNSUPPORTED_GRANT_TYPE.equals(errorCode)) {
+			return new UnsupportedGrantTypeException("不支持的GrantType");
+		}
+		else if (UNSUPPORTED_RESPONSE_TYPE.equals(errorCode)) {
+			return new UnsupportedResponseTypeException("不支持的ResponseType");
+		}
+		else if (ACCESS_DENIED.equals(errorCode)) {
+			return new UserDeniedAuthorizationException("用户没有权限");
+		}
+		else if (USERNAME_NOT_FOUND.equals(errorCode)) {
+			return new UserDeniedAuthorizationException("用户名不正确");
+		}
+		else {
+			return new OAuth2Exception("oauth2 error");
+		}
+	}
 	/**
 	 * Creates an {@link OAuth2Exception} from a Map&lt;String,String&gt;.
 	 * 
