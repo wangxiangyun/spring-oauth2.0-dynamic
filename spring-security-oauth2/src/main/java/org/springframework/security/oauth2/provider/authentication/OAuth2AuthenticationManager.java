@@ -95,7 +95,7 @@ public class OAuth2AuthenticationManager implements AuthenticationManager, Initi
 		if(accessPermissionManager!=null){
 			boolean flag = accessPermissionManager.checkPermission(authentication,auth);
 			if (!flag){
-				throw new OAuth2AccessDeniedException("token no right!! please check!");
+				throw new OAuth2AccessDeniedException("用户权限不足");
 			}
 		}
 		
