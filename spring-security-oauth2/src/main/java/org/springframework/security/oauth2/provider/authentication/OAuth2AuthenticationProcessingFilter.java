@@ -13,6 +13,7 @@
 package org.springframework.security.oauth2.provider.authentication;
 
 import java.io.IOException;
+import java.util.UUID;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -121,7 +123,7 @@ public class OAuth2AuthenticationProcessingFilter implements Filter, Initializin
 
 	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException,
 			ServletException {
-
+		this.setMDCKey(req,res);
 		final boolean debug = logger.isDebugEnabled();
 		final HttpServletRequest request = (HttpServletRequest) req;
 		final HttpServletResponse response = (HttpServletResponse) res;
@@ -174,6 +176,16 @@ public class OAuth2AuthenticationProcessingFilter implements Filter, Initializin
 		}
 
 		chain.doFilter(request, response);
+	}
+
+	/**
+	 * 设置一个唯一的追踪key 方便查询日志
+	 * @param request
+	 * @param res
+	 */
+	private void setMDCKey(ServletRequest request, ServletResponse res) {
+
+		MDC.put("MDCKEY", UUID.randomUUID().toString());
 	}
 
 	private boolean isAuthenticated() {

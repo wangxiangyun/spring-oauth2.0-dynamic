@@ -7,7 +7,7 @@
 		<artifactId>spring-security-oauth-parent</artifactId>
 		<version>2.0.13.RELEASE</version>
 	</parent>
-	<version>2.3.10.RELEASE</version>
+	<version>2.3.11.RELEASE</version>
 	<artifactId>spring-security-oauth2</artifactId>
 	<name>OAuth2 for Spring Security</name>
 	<description>Module for providing OAuth2 support to Spring Security</description>
@@ -211,7 +211,7 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.6</version>
-			<scope>test</scope>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
