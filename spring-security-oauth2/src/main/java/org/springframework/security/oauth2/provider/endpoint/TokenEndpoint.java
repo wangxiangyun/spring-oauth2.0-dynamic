@@ -177,6 +177,7 @@ public class TokenEndpoint extends AbstractEndpoint {
 	public ResponseEntity<OAuth2Exception> handleException(OAuth2Exception e) throws Exception {
 		logger.info("Handling error: " + e.getClass().getSimpleName() + ", " + e.getMessage());
 		OAuth2Exception newException =	OAuth2Exception.create(e.getOAuth2ErrorCode());
+		newException.setCode("4000");
 		return getExceptionTranslator().translate(newException);
 	}
 

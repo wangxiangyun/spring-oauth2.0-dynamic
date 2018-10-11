@@ -18,6 +18,8 @@ import java.util.TreeMap;
 @com.fasterxml.jackson.databind.annotation.JsonDeserialize(using = OAuth2ExceptionJackson2Deserializer.class)
 public class OAuth2Exception extends RuntimeException {
 
+	private String code;
+
 	public static final String ERROR = "error";
 	public static final String DESCRIPTION = "error_description";
 	public static final String URI = "error_uri";
@@ -43,6 +45,14 @@ public class OAuth2Exception extends RuntimeException {
 	public OAuth2Exception(String msg) {
 		super(msg);
 	}
+	public OAuth2Exception(String code,String msg) {
+		super(msg);
+		this.code=code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
 
 	/**
 	 * The OAuth2 error code.
@@ -50,7 +60,7 @@ public class OAuth2Exception extends RuntimeException {
 	 * @return The OAuth2 error code.
 	 */
 	public String getOAuth2ErrorCode() {
-		return "invalid_request";
+		return code;
 	}
 
 	/**
