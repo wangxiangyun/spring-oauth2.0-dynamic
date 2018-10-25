@@ -19,14 +19,14 @@ import java.util.List;
  * Created by wangxiangyun on 2018/9/13.
  */
 public class JdbcAccessPermissionManager implements AccessPermissionManager {
-    
+
     private final JdbcTemplate jdbcTemplate;
-    
+
     public JdbcAccessPermissionManager(DataSource dataSource) {
         Assert.notNull(dataSource, "DataSource required");
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
-    
+
     @Override
     public List<Role> getUserRole(UserCore user) {
         String sql = "SELECT * FROM role WHERE id IN (SELECT role_id FROM user_role WHERE user_id =?) ";
@@ -43,12 +43,12 @@ public class JdbcAccessPermissionManager implements AccessPermissionManager {
         }, user.getUserId());
         return roleList;
     }
-    
+
     @Override
     public List<Permission> getUserAllPermisson(UserCore user) {
-        String sql = "SELECT * FROM permission WHERE id IN "
-                + "(SELECT id FROM role_permisson WHERE  role_id IN "
-                + "( SELECT id FROM role WHERE id IN (SELECT role_id FROM user_role WHERE user_id =?)))";
+        String sql = "  SELECT * FROM permission WHERE id IN " +
+                "( SELECT permisson_id FROM role_permisson WHERE  role_id IN" +
+                "( SELECT role_id FROM user_role WHERE user_id =?))";
         List<Permission> permissionList = jdbcTemplate.query(sql, new RowMapper<Permission>() {
             @Override
             public Permission mapRow(ResultSet resultSet, int i) throws SQLException {
@@ -65,10 +65,10 @@ public class JdbcAccessPermissionManager implements AccessPermissionManager {
                 permission.setMethod(method);
                 return permission;
             }
-        },  user.getUserId());
+        }, user.getUserId());
         return permissionList;
     }
-    
+
     @Override
     public boolean checkPermission(Authentication httpAuth, Authentication auth2) {
         //检查是不是用户登录 如果是客户端登陆就不行了
@@ -85,7 +85,7 @@ public class JdbcAccessPermissionManager implements AccessPermissionManager {
             final String METHOD = request.getMethod();
             final String ALL_METHOD = "ALL";
             List<Permission> permissionList = this.getUserAllPermisson((UserCore) auth2.getPrincipal());
-            
+
             if (!permissionList.isEmpty()) {
                 PathMatcher matcher = new AntPathMatcher();
                 for (Permission permission : permissionList) {
